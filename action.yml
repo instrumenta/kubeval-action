@@ -1,0 +1,39 @@
+name: "Kubeval"
+description: "Validate Kubernetes manifests using the upstream Schemas"
+author: "Gareth Rushgrove"
+branding:
+  icon: "check"
+  color: "green"
+inputs: 
+  files:
+    description: "Files or directories to validate"
+    default: "."
+  output:
+    description: "Output format for results"
+    default: "stdout"
+  version:
+    description: "Version of Kubernetes to validate against"
+    default: "master"
+  strict:
+    description: "Whether to not to check for extra properties" 
+    default: true
+  openshift:
+    description: "Whether to use the schemas from OpenShift rather than Kubernetes" 
+    default: false
+  ignore_missing_schemas:
+    description: "Whether or not to skip custom resources" 
+    default: true
+runs:
+  using: 'docker'
+  image: 'docker://garethr/kubeval:latest'
+  args:
+  - -d
+  - ${{ inputs.files }} 
+  - -o
+  - ${{ inputs.output }}
+  - --strict=${{ inputs.strict }}
+  - --kubernetes-version
+  - ${{ inputs.version }}
+  - --openshift=${{ inputs.openshift }}
+  - --ignore-missing-schemas=${{ inputs.ignore_missing_schemas }}
+
